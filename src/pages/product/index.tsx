@@ -31,7 +31,11 @@ function ProductList() {
     try {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        console.log(docSnap.data());
+        const data = {
+          ...docSnap.data(),
+          id: docSnap.id,
+        };
+        setProduct([data as ProductListInterface]);
       } else {
         console.log("Document does not exist");
       }
@@ -46,7 +50,8 @@ function ProductList() {
     try {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        console.log(docSnap.data());
+        const data = { name: docSnap.data()["name"], id: docSnap.id };
+        console.log("docSnap.data()", data);
       } else {
         console.log("Document does not exist");
       }
