@@ -59,6 +59,7 @@ const LoginPage = () => {
           });
         });
     } catch (error) {
+      setLoading(false);
       console.log(error);
       message.info({
         type: "error",
