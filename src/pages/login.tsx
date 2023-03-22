@@ -1,3 +1,4 @@
+import { MehFilled } from "@ant-design/icons";
 import { Row, Col, Button, Form, Input, Divider, message } from "antd";
 import {
   createUserWithEmailAndPassword,
@@ -98,7 +99,7 @@ const LoginPage = () => {
             <Row className="content-box" justify={"end"}>
               <Col md={12} className="signin-content">
                 <Row justify={"center"} style={{ paddingTop: "30px" }}>
-                  <h1>login</h1>
+                  <h1>Sign In</h1>
                   <Col md={24}>
                     <Row justify={"center"} style={{ padding: "30px" }}>
                       <Form
@@ -149,7 +150,7 @@ const LoginPage = () => {
                         style={{ width: "100%" }}
                         onClick={() => setIsRegister(true)}
                       >
-                        Register
+                        Sign Up
                       </Button>
                     </Row>
                   </Col>
@@ -176,15 +177,23 @@ const LoginPage = () => {
                     ) : (
                       <Row justify={"center"}>
                         <h1>ระบบจัดการสินค้า</h1>
-                        <span>
-                          Lorem ipsum dolor sit amet consectetur adipisicing
-                          elit. Aliquid quis itaque, quidem fugit ad soluta at
-                          eius excepturi, libero vel, voluptas quam. Omnis ad
-                          repellendus voluptate, temporibus accusantium porro
-                          debitis adipisci numquam natus itaque vero blanditiis
-                          harum, sint quam nam dicta, neque eveniet cumque
-                          deserunt excepturi. Ipsam quaerat dolor quo.
-                        </span>
+                        <div
+                          style={{
+                            borderRadius: "30px",
+                            overflow: "hidden",
+                            height: "40vh",
+                          }}
+                        >
+                          <img
+                            src={`${require("../assets/images/6378220.jpg")}`}
+                            alt=""
+                            style={{
+                              width: "100%",
+                              display: "block",
+                              margin: "0 auto",
+                            }}
+                          />
+                        </div>
                       </Row>
                     )}
                   </Col>

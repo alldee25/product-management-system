@@ -9,8 +9,10 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
+  getDocs,
   onSnapshot,
+  query,
+  where,
 } from "firebase/firestore";
 import AddProduct from "./product-operating/addProduct";
 import EditProduct from "./product-operating/editProduct";
@@ -21,44 +23,36 @@ import Search from "antd/es/input/Search";
 function ProductList() {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
   const [product, setProduct] = React.useState<ProductListInterface[]>([]);
+  const [productSearched, setProductSearched] = React.useState<
+    ProductListInterface[]
+  >([]);
   const [onAddProduct, setOnAddProduct] = React.useState(false);
   const [onEditProduct, setOnEditProduct] = React.useState(false);
   const [id, setId] = React.useState("");
-  async function onSearchById(id: string) {
-    const docRef = doc(db, "product", id);
-    const docSnap = await getDoc(docRef);
-    docSnap.data();
-    try {
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = {
-          ...docSnap.data(),
-          id: docSnap.id,
-        };
-        setProduct([data as ProductListInterface]);
-      } else {
-        console.log("Document does not exist");
-      }
-    } catch (error) {
-      console.log(error);
+  async function onSearch(nameOrId: string) {
+    if (nameOrId == "") {
+      return;
     }
-  }
-  async function onSearchByProductName(id: string) {
-    const docRef = doc(db, "product", id);
-    const docSnap = await getDoc(docRef);
-    docSnap.data();
-    try {
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = { name: docSnap.data()["name"], id: docSnap.id };
-        console.log("docSnap.data()", data);
-      } else {
-        console.log("Document does not exist");
+    const productIdQuery = query(
+      collection(db, "product"),
+      where("productId", "==", nameOrId)
+    );
+    const productNameQuery = query(
+      collection(db, "product"),
+      where("name", "==", nameOrId)
+    );
+    const [productIdResults, productNameResults] = await Promise.all([
+      getDocs(productIdQuery),
+      getDocs(productNameQuery),
+    ]);
+    const products = [...productIdResults.docs, ...productNameResults.docs].map(
+      (doc) => {
+        return { ...doc.data(), id: doc.id } as ProductListInterface;
       }
-    } catch (error) {
-      console.log(error);
-    }
+    );
+    setProductSearched(products);
   }
+
   async function handelDelete(params: React.Key[]) {
     params.forEach(async (id) => {
       await deleteDoc(doc(db, "product", id.toString()));
@@ -108,7 +102,7 @@ function ProductList() {
   const columns: ColumnsType<ProductListInterface> = [
     {
       title: "Product Id",
-      dataIndex: "id",
+      dataIndex: "productId",
     },
     {
       title: "Product Name",
@@ -141,6 +135,7 @@ function ProductList() {
         snapShot.docs.forEach((doc) => {
           data.push({ ...doc.data(), id: doc.id });
         });
+        setProductSearched(data);
         setProduct(data);
       },
       (error) => {
@@ -182,21 +177,10 @@ function ProductList() {
                     <Row>
                       <Search
                         name="id"
-                        placeholder="input id"
+                        placeholder="input product id or product name"
                         allowClear
                         enterButton="Search"
-                        onSearch={onSearchById}
-                      />
-                    </Row>
-                  </Col>
-                  <Col>
-                    <Row>
-                      <Search
-                        name="productName"
-                        placeholder="input product name"
-                        allowClear
-                        enterButton="Search"
-                        onSearch={onSearchByProductName}
+                        onSearch={onSearch}
                       />
                     </Row>
                   </Col>
@@ -215,7 +199,7 @@ function ProductList() {
                     onClick={() => setOnAddProduct(true)}
                   >
                     <PlusOutlined />
-                    Create Product
+                    Add Product
                   </Button>
                 </Row>
               </Col>
@@ -229,7 +213,7 @@ function ProductList() {
             style={{ width: "100%" }}
             rowSelection={rowSelection}
             columns={columns}
-            dataSource={product}
+            dataSource={productSearched}
             rowKey="id"
           />
         </Row>

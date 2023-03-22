@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Col, Form, FormInstance, Input, Row } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { FormContextProps } from "antd/es/form/context";
 interface Props {
   isRegister: boolean;
   loading: boolean;
@@ -9,7 +8,7 @@ interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   form: FormInstance;
 }
-function Register({ setIsRegister, loading, setLoading, form }: Props) {
+function Register({ setIsRegister, loading, form }: Props) {
   const validateConfirmPassword = (_: any, value: any) => {
     const password = form.getFieldValue("password");
     if (value && value !== password) {
@@ -33,7 +32,7 @@ function Register({ setIsRegister, loading, setLoading, form }: Props) {
         <Row>
           <Col md={24}>
             <Row justify={"center"}>
-              <h1>sign up</h1>
+              <h1>Sign Up</h1>
             </Row>
           </Col>
           <Col md={24}>

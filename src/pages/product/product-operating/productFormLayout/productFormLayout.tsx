@@ -15,6 +15,7 @@ interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   formName: string;
+  loading: boolean;
 }
 
 function ProductFormLayout({
@@ -24,6 +25,7 @@ function ProductFormLayout({
   open,
   setOpen,
   formName,
+  loading,
 }: Props) {
   return (
     <Modal
@@ -33,7 +35,12 @@ function ProductFormLayout({
       onCancel={() => setOpen(false)}
       width={1000}
       footer={[
-        <Button type="primary" htmlType="submit" form={formName}>
+        <Button
+          loading={loading}
+          type="primary"
+          htmlType="submit"
+          form={formName}
+        >
           Save
         </Button>,
       ]}

@@ -38,6 +38,7 @@ function EditProduct({ open, setOpen, id }: Props) {
   }
   async function onFinish(values: any) {
     try {
+      setLoading(true);
       const washingtonRef = doc(db, "product", id);
       await updateDoc(washingtonRef, {
         name: values.name,
@@ -50,6 +51,7 @@ function EditProduct({ open, setOpen, id }: Props) {
         icon: "success",
       });
     } catch (error) {
+      setOpen(false);
       console.log("error", error);
     }
   }
@@ -59,6 +61,7 @@ function EditProduct({ open, setOpen, id }: Props) {
   return (
     <ProductFormLayout
       form={form}
+      loading={loading}
       onFinish={onFinish}
       formName="editProduct"
       setProductColors={setProductColors}
