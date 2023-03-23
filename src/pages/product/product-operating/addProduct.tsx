@@ -3,7 +3,15 @@ import Swal from "sweetalert2";
 import { Form } from "antd";
 import ProductFormLayout from "./productFormLayout/productFormLayout";
 import { ProductColorInterface } from "../../../components/form/product/Product";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../../../firebase";
 interface Props {
   open: boolean;
@@ -25,13 +33,17 @@ function Product({ open, setOpen }: Props) {
     try {
       setLoading(true);
       const productCollectionRef = collection(db, "product");
-      const querySnapshot = await getDocs(productCollectionRef);
+      const querySnapshot = await getDocs(
+        query(productCollectionRef, orderBy("createdAt", "desc"), limit(1))
+      );
       const latestProductId =
         querySnapshot.docs.length > 0
           ? querySnapshot.docs[querySnapshot.docs.length - 1].data()[
               "productId"
             ]
           : null;
+      console.log("querySnapshot", querySnapshot.docs);
+
       const date = new Date();
       const formattedDate = `${date.getFullYear()}${(date.getMonth() + 1)
         .toString()
@@ -46,10 +58,10 @@ function Product({ open, setOpen }: Props) {
         productId: newProductId,
         name: values.name,
         price: values.price,
+        createdAt: serverTimestamp(),
       });
       Swal.fire({
         title: "Success!",
-        text: "Product is added",
         icon: "success",
       });
       form.resetFields();

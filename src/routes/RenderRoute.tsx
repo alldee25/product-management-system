@@ -1,17 +1,27 @@
 import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { getRoutes, getMenuSidebar } from "./index";
-import { useAuthContextState } from "../context/Auth/store";
+import {
+  useAuthContextDispatch,
+  useAuthContextState,
+} from "../context/Auth/store";
 import DefaultLayout from "../layout/DefaultLayout";
 import MainLayout from "../layout/MainLayout";
 import { TypesLayout } from "../interface/theme";
 import { RoutesInterface } from "../interface";
+import { isTokenExpired } from "../utils/utiles";
 
 function RenderRoute() {
-  const { userInfo, auth } = useAuthContextState();
+  const { userInfo, auth, token } = useAuthContextState();
+  const { _signOut } = useAuthContextDispatch();
   const _authRouters = getRoutes("auth");
   const routers = getRoutes(userInfo?.role);
   const menuSidebar = getMenuSidebar(userInfo?.role);
+  React.useEffect(() => {
+    if (isTokenExpired(token.accesstoken)) {
+      _signOut();
+    }
+  }, []);
   return (
     <Switch>
       {!auth &&

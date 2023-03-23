@@ -11,6 +11,7 @@ import {
   doc,
   getDocs,
   onSnapshot,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -129,7 +130,7 @@ function ProductList() {
   ];
   React.useEffect(() => {
     const unsub = onSnapshot(
-      collection(db, "product"),
+      query(collection(db, "product"), orderBy("createdAt", "desc")),
       (snapShot) => {
         let data: any = [];
         snapShot.docs.forEach((doc) => {
